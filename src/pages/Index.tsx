@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header';
 import GameBoard from '../components/GameBoard';
 import GameModal from '../components/GameModal';
 import GameStats from '../components/GameStats';
+import StreakPopup from '../components/StreakPopup';
 
 const WORDS = [
   'HOLLA', 'BEACH', 'FLAME', 'DANCE', 'MUSIC', 'PARTY', 'SHINE', 'SMILE',
@@ -21,6 +21,7 @@ const Index = () => {
   const [totalGames, setTotalGames] = useState(0);
   const [totalWins, setTotalWins] = useState(0);
   const [guessHistory, setGuessHistory] = useState([]);
+  const [showStreakPopup, setShowStreakPopup] = useState(false);
   const inputRefs = useRef([]);
 
   useEffect(() => {
@@ -37,8 +38,13 @@ const Index = () => {
     startNewGame();
   }, []);
 
+  const getRandomWord = () => {
+    const randomIndex = Math.floor(Math.random() * WORDS.length);
+    return WORDS[randomIndex];
+  };
+
   const startNewGame = () => {
-    const randomWord = WORDS[Math.floor(Math.random() * WORDS.length)];
+    const randomWord = getRandomWord();
     setCorrectWord(randomWord);
     setCurrentRow(0);
     setCurrentGuess(['', '', '', '', '']);
@@ -61,6 +67,11 @@ const Index = () => {
     localStorage.setItem('vocabWordleTotalGames', newTotalGames.toString());
     localStorage.setItem('vocabWordleTotalWins', newTotalWins.toString());
     localStorage.setItem('vocabWordleStreak', newStreak.toString());
+
+    // Show streak popup if won and streak > 1
+    if (won && newStreak > 1) {
+      setShowStreakPopup(true);
+    }
   };
 
   const handleInputChange = (index, value) => {
@@ -144,6 +155,11 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <Header />
+      <StreakPopup 
+        streak={streak} 
+        isVisible={showStreakPopup} 
+        onHide={() => setShowStreakPopup(false)} 
+      />
       
       <main className="container mx-auto px-4 py-8 max-w-md">
         <div className="text-center mb-8">
