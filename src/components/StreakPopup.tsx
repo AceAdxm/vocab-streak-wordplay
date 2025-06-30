@@ -18,7 +18,7 @@ const StreakPopup = ({ streak, isVisible, onHide }: StreakPopupProps) => {
   }, [isVisible, onHide]);
 
   const getFlameEmoji = (streak: number) => {
-    const flameColors = ['🔥', '🟠', '🟡', '🟢', '🔵'];
+    const flameColors = ['❤️', '🧡', '💛', '💚', '💙'];
     const colorIndex = Math.floor((streak - 1) / 5) % flameColors.length;
     return flameColors[colorIndex];
   };
