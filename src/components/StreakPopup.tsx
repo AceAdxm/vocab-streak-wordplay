@@ -17,13 +17,19 @@ const StreakPopup = ({ streak, isVisible, onHide }: StreakPopupProps) => {
     }
   }, [isVisible, onHide]);
 
+  const getFlameEmoji = (streak: number) => {
+    const flameColors = ['🔥', '💙', '💚', '💜', '🧡'];
+    const colorIndex = Math.floor((streak - 1) / 5) % flameColors.length;
+    return flameColors[colorIndex];
+  };
+
   if (!isVisible) return null;
 
   return (
     <div className="fixed top-4 left-4 z-50 animate-fade-in">
       <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg shadow-lg animate-scale-in">
         <div className="flex items-center space-x-2">
-          <span className="text-2xl">🔥</span>
+          <span className="text-2xl">{getFlameEmoji(streak)}</span>
           <div>
             <div className="font-bold text-lg">Streak: {streak}</div>
             <div className="text-sm opacity-90">Keep it up!</div>
