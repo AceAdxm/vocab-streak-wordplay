@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header';
 import GameBoard from '../components/GameBoard';
@@ -6,8 +7,7 @@ import GameStats from '../components/GameStats';
 import StreakPopup from '../components/StreakPopup';
 
 const WORDS = [
-  'HOLLA', 'BEACH', 'FLAME', 'DANCE', 'MUSIC', 'PARTY', 'SHINE', 'SMILE',
-  'DREAM', 'HEART', 'MAGIC', 'SWEET', 'FRESH', 'BLISS', 'GRACE', 'LIGHT'
+  'HOLLA'
 ];
 
 const Index = () => {
