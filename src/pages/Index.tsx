@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header';
 import GameBoard from '../components/GameBoard';
@@ -161,6 +162,11 @@ const Index = () => {
         onHide={() => setShowStreakPopup(false)} 
       />
       
+      {/* Issues Box positioned in top right */}
+      <div className="fixed top-4 right-4 w-80 z-10">
+        <IssuesBox />
+      </div>
+      
       <main className="container mx-auto px-4 py-8 max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -170,8 +176,6 @@ const Index = () => {
         </div>
         
         <GameStats streak={streak} totalGames={totalGames} totalWins={totalWins} />
-        
-        <IssuesBox />
         
         <GameBoard
           gameBoard={gameBoard}
