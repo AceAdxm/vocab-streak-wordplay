@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header';
 import GameBoard from '../components/GameBoard';
 import GameModal from '../components/GameModal';
 import GameStats from '../components/GameStats';
 import StreakPopup from '../components/StreakPopup';
+import IssuesBox from '../components/IssuesBox';
 
 const WORDS = [
   'HOLLA'
@@ -170,6 +170,8 @@ const Index = () => {
         </div>
         
         <GameStats streak={streak} totalGames={totalGames} totalWins={totalWins} />
+        
+        <IssuesBox />
         
         <GameBoard
           gameBoard={gameBoard}
