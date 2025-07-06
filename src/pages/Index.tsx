@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header';
 import GameBoard from '../components/GameBoard';
@@ -163,7 +164,7 @@ const Index = () => {
       />
       
       {/* Issues Box positioned in top right */}
-      <div className="fixed top-4 right-4 w-80 z-10">
+      <div className="fixed top-20 right-4 w-80 z-10">
         <IssuesBox />
       </div>
       
