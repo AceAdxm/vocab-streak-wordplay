@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Check, X, Edit } from 'lucide-react';
 
@@ -83,11 +82,14 @@ const IssuesBox = () => {
   const completedIssues = issues.filter(issue => issue.completed);
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6 mb-8">
+    <div className="bg-gray-800 border-2 border-purple-500/30 rounded-xl p-6 mb-8 shadow-lg">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-white">Issues Tracker</h2>
-        <div className="text-sm text-gray-400">
-          {pendingIssues.length} pending, {completedIssues.length} completed
+        <h2 className="text-xl font-bold text-white flex items-center gap-2">
+          <span className="text-purple-400">🐛</span>
+          Issues Tracker
+        </h2>
+        <div className="text-sm text-gray-400 bg-gray-700 px-3 py-1 rounded-full">
+          {pendingIssues.length} pending • {completedIssues.length} completed
         </div>
       </div>
 
@@ -113,14 +115,15 @@ const IssuesBox = () => {
       {/* Issues list */}
       <div className="space-y-3">
         {issues.length === 0 ? (
-          <div className="text-center py-8 text-gray-400">
+          <div className="text-center py-8 text-gray-400 bg-gray-700/50 rounded-lg border-2 border-dashed border-gray-600">
+            <span className="text-4xl mb-2 block">📝</span>
             No issues tracked yet. Add one above to get started!
           </div>
         ) : (
           <>
             {/* Pending issues */}
             {pendingIssues.map((issue) => (
-              <div key={issue.id} className="flex items-center gap-3 bg-gray-700 p-3 rounded-lg">
+              <div key={issue.id} className="flex items-center gap-3 bg-gray-700 p-3 rounded-lg border-l-4 border-orange-500">
                 <button
                   onClick={() => toggleIssue(issue.id)}
                   className="w-6 h-6 rounded border-2 border-gray-500 hover:border-green-500 transition-colors flex items-center justify-center"
@@ -181,7 +184,7 @@ const IssuesBox = () => {
 
             {/* Completed issues */}
             {completedIssues.map((issue) => (
-              <div key={issue.id} className="flex items-center gap-3 bg-gray-700/50 p-3 rounded-lg">
+              <div key={issue.id} className="flex items-center gap-3 bg-gray-700/50 p-3 rounded-lg border-l-4 border-green-500">
                 <button
                   onClick={() => toggleIssue(issue.id)}
                   className="w-6 h-6 rounded border-2 border-green-500 transition-colors flex items-center justify-center bg-green-500"
@@ -210,7 +213,7 @@ const IssuesBox = () => {
         <div className="mt-4 text-center">
           <button
             onClick={clearCompleted}
-            className="text-sm text-gray-400 hover:text-white underline"
+            className="text-sm text-gray-400 hover:text-white underline hover:bg-gray-700 px-3 py-1 rounded transition-colors"
           >
             Clear {completedIssues.length} completed issue{completedIssues.length !== 1 ? 's' : ''}
           </button>
