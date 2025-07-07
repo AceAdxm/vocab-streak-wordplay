@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Check, X, Edit, Minimize2, Maximize2 } from 'lucide-react';
 
@@ -83,7 +84,7 @@ const IssuesBox = () => {
   const completedIssues = issues.filter(issue => issue.completed);
 
   return (
-    <div className="bg-gray-800 border-2 border-purple-500/30 rounded-xl shadow-lg overflow-hidden">
+    <div className="bg-gray-800 border border-gray-700 rounded-lg shadow-lg overflow-hidden">
       {/* Header with minimize button */}
       <div className="flex items-center justify-between p-4 bg-gray-800 border-b border-gray-700">
         <div className="flex items-center gap-2">

@@ -1,6 +1,8 @@
 
 import React, { useState } from 'react';
-import { ChevronDown, ExternalLink, User } from 'lucide-react';
+import { ChevronDown, ExternalLink, User, Bug } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import IssuesBox from './IssuesBox';
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -33,6 +35,18 @@ const Header = () => {
             <User className="w-4 h-4" />
             <span>Sign Up</span>
           </button>
+          
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors duration-200">
+                <Bug className="w-4 h-4" />
+                <span>Issues</span>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-96 p-0" align="end">
+              <IssuesBox />
+            </PopoverContent>
+          </Popover>
           
           <div className="relative">
             <button

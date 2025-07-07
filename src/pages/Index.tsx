@@ -1,12 +1,9 @@
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header';
 import GameBoard from '../components/GameBoard';
 import GameModal from '../components/GameModal';
 import GameStats from '../components/GameStats';
 import StreakPopup from '../components/StreakPopup';
-import IssuesBox from '../components/IssuesBox';
 
 const WORDS = [
   'HOLLA'
@@ -162,11 +159,6 @@ const Index = () => {
         isVisible={showStreakPopup} 
         onHide={() => setShowStreakPopup(false)} 
       />
-      
-      {/* Issues Box positioned in top right */}
-      <div className="fixed top-20 right-4 w-80 z-10">
-        <IssuesBox />
-      </div>
       
       <main className="container mx-auto px-4 py-8 max-w-md">
         <div className="text-center mb-8">
