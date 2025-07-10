@@ -195,16 +195,54 @@ const Index = () => {
   const [guessHistory, setGuessHistory] = useState([]);
   const [showStreakPopup, setShowStreakPopup] = useState(false);
   const [wordDefinition, setWordDefinition] = useState('');
+  const [deviceId, setDeviceId] = useState('');
   const inputRefs = useRef([]);
 
+  // Generate or retrieve device-specific ID
+  const getDeviceId = () => {
+    let id = localStorage.getItem('vocabWordleDeviceId');
+    if (!id) {
+      // Generate a unique ID based on various device characteristics
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.textBaseline = 'top';
+      ctx.font = '14px Arial';
+      ctx.fillText('Device fingerprint', 2, 2);
+      
+      const fingerprint = [
+        navigator.userAgent,
+        navigator.language,
+        screen.width + 'x' + screen.height,
+        new Date().getTimezoneOffset(),
+        canvas.toDataURL()
+      ].join('|');
+      
+      // Create a simple hash from the fingerprint
+      let hash = 0;
+      for (let i = 0; i < fingerprint.length; i++) {
+        const char = fingerprint.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32-bit integer
+      }
+      
+      id = 'device_' + Math.abs(hash).toString(36) + '_' + Date.now().toString(36);
+      localStorage.setItem('vocabWordleDeviceId', id);
+    }
+    return id;
+  };
+
   useEffect(() => {
+    // Get or generate device ID
+    const id = getDeviceId();
+    setDeviceId(id);
+    
     // Reset streak to 0 on every page load
     setStreak(0);
-    localStorage.setItem('vocabWordleStreak', '0');
+    localStorage.setItem(`vocabWordleStreak_${id}`, '0');
     
-    // Load only total stats from localStorage (keep historical data)
-    const savedTotalGames = localStorage.getItem('vocabWordleTotalGames');
-    const savedTotalWins = localStorage.getItem('vocabWordleTotalWins');
+    // Load device-specific stats from localStorage
+    const savedTotalGames = localStorage.getItem(`vocabWordleTotalGames_${id}`);
+    const savedTotalWins = localStorage.getItem(`vocabWordleTotalWins_${id}`);
     
     if (savedTotalGames) setTotalGames(parseInt(savedTotalGames));
     if (savedTotalWins) setTotalWins(parseInt(savedTotalWins));
@@ -240,8 +278,9 @@ const Index = () => {
     setTotalWins(newTotalWins);
     setStreak(newStreak);
     
-    localStorage.setItem('vocabWordleTotalGames', newTotalGames.toString());
-    localStorage.setItem('vocabWordleTotalWins', newTotalWins.toString());
+    // Save stats with device-specific keys
+    localStorage.setItem(`vocabWordleTotalGames_${deviceId}`, newTotalGames.toString());
+    localStorage.setItem(`vocabWordleTotalWins_${deviceId}`, newTotalWins.toString());
     // Note: streak is reset on page load, so we don't persist it long-term
     
     // Show streak popup if won and streak > 1
