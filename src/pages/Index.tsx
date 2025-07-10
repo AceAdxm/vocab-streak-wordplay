@@ -198,16 +198,18 @@ const Index = () => {
   const inputRefs = useRef([]);
 
   useEffect(() => {
-    // Load stats from localStorage
-    const savedStreak = localStorage.getItem('vocabWordleStreak');
+    // Reset streak to 0 on every page load
+    setStreak(0);
+    localStorage.setItem('vocabWordleStreak', '0');
+    
+    // Load only total stats from localStorage (keep historical data)
     const savedTotalGames = localStorage.getItem('vocabWordleTotalGames');
     const savedTotalWins = localStorage.getItem('vocabWordleTotalWins');
     
-    if (savedStreak) setStreak(parseInt(savedStreak));
     if (savedTotalGames) setTotalGames(parseInt(savedTotalGames));
     if (savedTotalWins) setTotalWins(parseInt(savedTotalWins));
     
-    // Set random word
+    // Start a new game on every page load
     startNewGame();
   }, []);
 
@@ -240,8 +242,8 @@ const Index = () => {
     
     localStorage.setItem('vocabWordleTotalGames', newTotalGames.toString());
     localStorage.setItem('vocabWordleTotalWins', newTotalWins.toString());
-    localStorage.setItem('vocabWordleStreak', newStreak.toString());
-
+    // Note: streak is reset on page load, so we don't persist it long-term
+    
     // Show streak popup if won and streak > 1
     if (won && newStreak > 1) {
       setShowStreakPopup(true);
