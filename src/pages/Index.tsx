@@ -5,9 +5,182 @@ import GameModal from '../components/GameModal';
 import GameStats from '../components/GameStats';
 import StreakPopup from '../components/StreakPopup';
 
-const WORDS = [
-  'HOLLA'
-];
+const SPANISH_WORDS = {
+  'SOMOS': 'we are',
+  'ELLOS': 'they',
+  'HABER': 'to have (auxiliary)',
+  'HABIA': 'there was/were',
+  'HABRA': 'there will be',
+  'TIENE': 'has/have',
+  'TENIA': 'had',
+  'ESTAR': 'to be (temporary)',
+  'ESTOY': 'I am',
+  'ESTAS': 'you are',
+  'ESTAN': 'they are',
+  'ESTOS': 'these',
+  'HARIA': 'would do',
+  'HECHO': 'done/made',
+  'DECIR': 'to say',
+  'PODER': 'to be able',
+  'PODRE': 'I will be able',
+  'VAMOS': 'we go/let\'s go',
+  'VEIAS': 'you saw',
+  'VISTO': 'seen',
+  'MUCHO': 'much/a lot',
+  'DISTE': 'you gave',
+  'DIMOS': 'we gave',
+  'SABER': 'to know',
+  'ALGUN': 'some/any',
+  'MISMO': 'same',
+  'QUISE': 'I wanted',
+  'HASTA': 'until',
+  'SOBRE': 'about/on',
+  'ENTRE': 'between',
+  'PASAR': 'to pass',
+  'DESDE': 'from/since',
+  'AHORA': 'now',
+  'CREER': 'to believe',
+  'DONDE': 'where',
+  'DEJAR': 'to leave',
+  'PONER': 'to put',
+  'PARTE': 'part',
+  'BUENO': 'good',
+  'MAJOR': 'better',
+  'MENOS': 'less',
+  'MUJER': 'woman',
+  'MUNDO': 'world',
+  'MIRAR': 'to look',
+  'TOMAR': 'to take',
+  'VIVIR': 'to live',
+  'LUEGO': 'then',
+  'MAYOR': 'older/bigger',
+  'NUNCA': 'never',
+  'PADRE': 'father',
+  'NOCHE': 'night',
+  'PUNTO': 'point',
+  'ANTES': 'before',
+  'GRUPO': 'group',
+  'SENOR': 'sir/mister',
+  'NADIE': 'nobody',
+  'UNICO': 'unique/only',
+  'PEDIR': 'to ask for',
+  'VIEJO': 'old',
+  'JUGAR': 'to play',
+  'JUEGO': 'game',
+  'JUEGA': 'plays',
+  'COLOR': 'color',
+  'FINAL': 'end',
+  'PAGAR': 'to pay',
+  'TARDE': 'late/afternoon',
+  'PAPEL': 'paper',
+  'MEDIO': 'half/middle',
+  'VISTA': 'view',
+  'SUBIR': 'to go up',
+  'JOVEN': 'young',
+  'SERIE': 'series',
+  'MOVER': 'to move',
+  'MENOR': 'smaller/younger',
+  'BRAZO': 'arm',
+  'TODOS': 'all/everyone',
+  'LIBRE': 'free',
+  'SITIO': 'place',
+  'BAJAR': 'to go down',
+  'MIEDO': 'fear',
+  'POBRE': 'poor',
+  'FAVOR': 'favor',
+  'VIAJE': 'trip',
+  'DATOS': 'data',
+  'FACIL': 'easy',
+  'CAUSA': 'cause',
+  'SIETE': 'seven',
+  'SALUD': 'health',
+  'CIELO': 'sky',
+  'NORTE': 'north',
+  'CARTA': 'letter',
+  'JULIO': 'July',
+  'DOLAR': 'dollar',
+  'TIRAR': 'to throw',
+  'EXITO': 'success',
+  'LOCAL': 'local',
+  'COMUN': 'common',
+  'TEXTO': 'text',
+  'GRADO': 'degree',
+  'COSTA': 'coast',
+  'FELIZ': 'happy',
+  'RADIO': 'radio',
+  'CALOR': 'heat',
+  'COGER': 'to take',
+  'RUIDO': 'noise',
+  'JUNIO': 'June',
+  'CERCA': 'near',
+  'VENTA': 'sale',
+  'BELLO': 'beautiful',
+  'CORTO': 'short',
+  'DURAR': 'to last',
+  'CHICA': 'girl',
+  'HOTEL': 'hotel',
+  'ENERO': 'January',
+  'NORMA': 'rule',
+  'VIDEO': 'video',
+  'LISTA': 'list',
+  'COCHE': 'car',
+  'PATIO': 'patio',
+  'MARZO': 'March',
+  'SILLA': 'chair',
+  'MARCA': 'brand',
+  'CANAL': 'channel',
+  'DOBLE': 'double',
+  'BANDA': 'band',
+  'NOVIO': 'boyfriend',
+  'LUNES': 'Monday',
+  'REGLA': 'rule',
+  'BARCO': 'boat',
+  'LECHE': 'milk',
+  'AVION': 'airplane',
+  'PRIMO': 'cousin',
+  'PLAYA': 'beach',
+  'ACTOR': 'actor',
+  'LENTO': 'slow',
+  'NARIZ': 'nose',
+  'BOLSA': 'bag',
+  'FALSO': 'false',
+  'DOLER': 'to hurt',
+  'LAVAR': 'to wash',
+  'JUSTO': 'fair/just',
+  'LLAVE': 'key',
+  'SUCIO': 'dirty',
+  'FUMAR': 'to smoke',
+  'CLARO': 'clear',
+  'FRUTA': 'fruit',
+  'HUEVO': 'egg',
+  'NOVIA': 'girlfriend',
+  'BAILE': 'dance',
+  'ADIOS': 'goodbye',
+  'VIRUS': 'virus',
+  'OESTE': 'west',
+  'TRECE': 'thirteen',
+  'FALDA': 'skirt',
+  'FERIA': 'fair',
+  'RUBIO': 'blonde',
+  'MOVIL': 'mobile',
+  'TENGO': 'I have',
+  'TENER': 'to have',
+  'TENGA': 'have (subjunctive)',
+  'HAGAS': 'do (subjunctive)',
+  'VAYAS': 'go (subjunctive)',
+  'SABRE': 'I will know',
+  'DEBER': 'should/must',
+  'ELLAS': 'they (feminine)',
+  'SALIR': 'to leave',
+  'VENIR': 'to come',
+  'VENGA': 'come (subjunctive)',
+  'FORMA': 'form',
+  'GENTE': 'people',
+  'LUGAR': 'place',
+  'HACIA': 'towards'
+};
+
+const WORDS = Object.keys(SPANISH_WORDS);
 
 const Index = () => {
   const [correctWord, setCorrectWord] = useState('');
@@ -21,6 +194,7 @@ const Index = () => {
   const [totalWins, setTotalWins] = useState(0);
   const [guessHistory, setGuessHistory] = useState([]);
   const [showStreakPopup, setShowStreakPopup] = useState(false);
+  const [wordDefinition, setWordDefinition] = useState('');
   const inputRefs = useRef([]);
 
   useEffect(() => {
@@ -45,6 +219,7 @@ const Index = () => {
   const startNewGame = () => {
     const randomWord = getRandomWord();
     setCorrectWord(randomWord);
+    setWordDefinition(SPANISH_WORDS[randomWord]);
     setCurrentRow(0);
     setCurrentGuess(['', '', '', '', '']);
     setGameBoard(Array(5).fill(null).map(() => Array(5).fill('')));
@@ -163,9 +338,9 @@ const Index = () => {
       <main className="container mx-auto px-4 py-8 max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Vocab Wordle
+            Spanish Wordle
           </h1>
-          <p className="text-gray-300">Guess the 5-letter word in 5 tries!</p>
+          <p className="text-gray-300">Guess the 5-letter Spanish word in 5 tries!</p>
         </div>
         
         <GameStats streak={streak} totalGames={totalGames} totalWins={totalWins} />
@@ -203,6 +378,7 @@ const Index = () => {
         isOpen={showModal}
         gameStatus={gameStatus}
         correctWord={correctWord}
+        wordDefinition={wordDefinition}
         attempts={currentRow + (gameStatus === 'won' ? 1 : 0)}
         onClose={() => setShowModal(false)}
         onNewGame={startNewGame}

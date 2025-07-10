@@ -5,6 +5,7 @@ const GameModal = ({
   isOpen,
   gameStatus,
   correctWord,
+  wordDefinition,
   attempts,
   onClose,
   onNewGame
@@ -24,9 +25,14 @@ const GameModal = ({
           {isWin ? 'Congratulations!' : 'Game Over'}
         </h2>
         
-        <p className="text-gray-300 mb-2">
-          The word was: <span className="font-bold text-white">{correctWord}</span>
-        </p>
+        <div className="mb-4">
+          <p className="text-gray-300 mb-2">
+            The word was: <span className="font-bold text-white">{correctWord}</span>
+          </p>
+          <p className="text-purple-400 text-lg">
+            "{wordDefinition}"
+          </p>
+        </div>
         
         {isWin && (
           <p className="text-gray-300 mb-6">
