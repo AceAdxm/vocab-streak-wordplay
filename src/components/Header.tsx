@@ -1,11 +1,12 @@
 
 import React, { useState } from 'react';
-import { ChevronDown, ExternalLink, User, Bug } from 'lucide-react';
+import { ChevronDown, ExternalLink, User, Bug, Book, Menu } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import IssuesBox from './IssuesBox';
+import VocabularyBook from './VocabularyBook';
 
 const Header = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMainDropdownOpen, setIsMainDropdownOpen] = useState(false);
 
   const socialLinks = [
     { name: 'TikTok', url: 'https://tiktok.com', icon: '🎵' },
@@ -14,7 +15,7 @@ const Header = () => {
   ];
 
   const handleSignUp = () => {
-    // Placeholder for sign up functionality
+    setIsMainDropdownOpen(false);
     alert('Sign up coming soon! This will track your daily login streaks, correct words, and progress.');
   };
 
@@ -28,52 +29,66 @@ const Header = () => {
         </div>
         
         <div className="flex items-center space-x-4">
-          <button
-            onClick={handleSignUp}
-            className="flex items-center space-x-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 px-4 py-2 rounded-lg font-semibold text-white transition-all duration-200 transform hover:scale-105"
-          >
-            <User className="w-4 h-4" />
-            <span>Sign Up</span>
-          </button>
-          
           <Popover>
             <PopoverTrigger asChild>
               <button className="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors duration-200">
-                <Bug className="w-4 h-4" />
-                <span>Issues</span>
+                <Book className="w-4 h-4" />
+                <span>Vocabulary</span>
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-96 p-0" align="end">
-              <IssuesBox />
+              <VocabularyBook />
             </PopoverContent>
           </Popover>
           
           <div className="relative">
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => setIsMainDropdownOpen(!isMainDropdownOpen)}
               className="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors duration-200"
             >
-              <span>Support me</span>
-              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              <Menu className="w-4 h-4" />
+              <span>Menu</span>
+              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isMainDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
             
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50 animate-fade-in">
+            {isMainDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-64 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50 animate-fade-in">
                 <div className="py-2">
-                  {socialLinks.map((link) => (
-                    <a
-                      key={link.name}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center space-x-3 px-4 py-2 hover:bg-gray-700 transition-colors duration-200"
-                      onClick={() => setIsDropdownOpen(false)}
-                    >
-                      <span className="text-lg">{link.icon}</span>
-                      <span>{link.name}</span>
-                      <ExternalLink className="w-4 h-4 ml-auto" />
-                    </a>
-                  ))}
+                  <button
+                    onClick={handleSignUp}
+                    className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-700 transition-colors duration-200 text-left"
+                  >
+                    <User className="w-4 h-4" />
+                    <span>Sign Up</span>
+                  </button>
+                  
+                  <div className="px-4 py-3 hover:bg-gray-700 transition-colors duration-200">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <Bug className="w-4 h-4" />
+                      <span>Report Issues</span>
+                    </div>
+                    <div className="ml-7">
+                      <IssuesBox />
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-gray-700 mt-2 pt-2">
+                    <div className="px-4 py-2 text-sm text-gray-400">Support me</div>
+                    {socialLinks.map((link) => (
+                      <a
+                        key={link.name}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center space-x-3 px-4 py-2 hover:bg-gray-700 transition-colors duration-200"
+                        onClick={() => setIsMainDropdownOpen(false)}
+                      >
+                        <span className="text-lg">{link.icon}</span>
+                        <span>{link.name}</span>
+                        <ExternalLink className="w-4 h-4 ml-auto" />
+                      </a>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
