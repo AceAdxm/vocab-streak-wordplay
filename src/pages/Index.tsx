@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header';
 import GameBoard from '../components/GameBoard';
@@ -258,14 +259,14 @@ const Index = () => {
     startNewGame(totalGamesCount);
   }, []);
 
-  const getRandomWord = (totalGames = totalGames) => {
-    const level = getCurrentLevel(totalGames);
+  const getRandomWord = (gameCount = 0) => {
+    const level = getCurrentLevel(gameCount);
     const availableWords = getWordsForLevel(level);
     const randomIndex = Math.floor(Math.random() * availableWords.length);
     return availableWords[randomIndex];
   };
 
-  const startNewGame = (gameCount = totalGames) => {
+  const startNewGame = (gameCount = 0) => {
     const randomWord = getRandomWord(gameCount);
     setCorrectWord(randomWord);
     setWordDefinition(SPANISH_WORDS[randomWord]);
@@ -302,8 +303,19 @@ const Index = () => {
   const handleInputChange = (index, value) => {
     if (gameStatus !== 'playing') return;
     
+    // Only allow letters that exist in our Spanish word dictionary
+    const upperValue = value.toUpperCase();
+    const validLetters = new Set();
+    Object.keys(SPANISH_WORDS).forEach(word => {
+      word.split('').forEach(letter => validLetters.add(letter));
+    });
+    
+    if (upperValue && !validLetters.has(upperValue)) {
+      return; // Don't update if the letter is not in our dictionary
+    }
+    
     const newGuess = [...currentGuess];
-    newGuess[index] = value.toUpperCase();
+    newGuess[index] = upperValue;
     setCurrentGuess(newGuess);
     
     // Auto-advance to next input
@@ -324,11 +336,19 @@ const Index = () => {
   const submitGuess = () => {
     if (currentGuess.some(letter => letter === '') || gameStatus !== 'playing') return;
     
+    const guessWord = currentGuess.join('');
+    
+    // Check if the guessed word exists in our dictionary
+    if (!SPANISH_WORDS[guessWord]) {
+      // Show a brief error message or shake animation
+      console.log('Invalid word:', guessWord);
+      return;
+    }
+    
     const newBoard = [...gameBoard];
     newBoard[currentRow] = [...currentGuess];
     setGameBoard(newBoard);
     
-    const guessWord = currentGuess.join('');
     const newHistory = [...guessHistory, { guess: guessWord, colors: getLetterColors(guessWord) }];
     setGuessHistory(newHistory);
     
