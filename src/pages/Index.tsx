@@ -4,6 +4,8 @@ import GameBoard from '../components/GameBoard';
 import GameModal from '../components/GameModal';
 import GameStats from '../components/GameStats';
 import StreakPopup from '../components/StreakPopup';
+import LevelIndicator from '../components/LevelIndicator';
+import { getCurrentLevel, getWordsForLevel } from '../utils/difficultyLevels';
 
 const SPANISH_WORDS = {
   'SOMOS': 'we are',
@@ -196,6 +198,7 @@ const Index = () => {
   const [showStreakPopup, setShowStreakPopup] = useState(false);
   const [wordDefinition, setWordDefinition] = useState('');
   const [deviceId, setDeviceId] = useState('');
+  const [currentLevel, setCurrentLevel] = useState(1);
   const inputRefs = useRef([]);
 
   // Generate or retrieve device-specific ID
@@ -244,20 +247,26 @@ const Index = () => {
     const savedTotalGames = localStorage.getItem(`vocabWordleTotalGames_${id}`);
     const savedTotalWins = localStorage.getItem(`vocabWordleTotalWins_${id}`);
     
-    if (savedTotalGames) setTotalGames(parseInt(savedTotalGames));
-    if (savedTotalWins) setTotalWins(parseInt(savedTotalWins));
+    const totalGamesCount = savedTotalGames ? parseInt(savedTotalGames) : 0;
+    const totalWinsCount = savedTotalWins ? parseInt(savedTotalWins) : 0;
+    
+    setTotalGames(totalGamesCount);
+    setTotalWins(totalWinsCount);
+    setCurrentLevel(getCurrentLevel(totalGamesCount));
     
     // Start a new game on every page load
-    startNewGame();
+    startNewGame(totalGamesCount);
   }, []);
 
-  const getRandomWord = () => {
-    const randomIndex = Math.floor(Math.random() * WORDS.length);
-    return WORDS[randomIndex];
+  const getRandomWord = (totalGames = totalGames) => {
+    const level = getCurrentLevel(totalGames);
+    const availableWords = getWordsForLevel(level);
+    const randomIndex = Math.floor(Math.random() * availableWords.length);
+    return availableWords[randomIndex];
   };
 
-  const startNewGame = () => {
-    const randomWord = getRandomWord();
+  const startNewGame = (gameCount = totalGames) => {
+    const randomWord = getRandomWord(gameCount);
     setCorrectWord(randomWord);
     setWordDefinition(SPANISH_WORDS[randomWord]);
     setCurrentRow(0);
@@ -266,22 +275,23 @@ const Index = () => {
     setGameStatus('playing');
     setShowModal(false);
     setGuessHistory([]);
-    console.log('New game started with word:', randomWord);
+    console.log('New game started with word:', randomWord, 'Level:', getCurrentLevel(gameCount));
   };
 
   const saveStats = (won) => {
     const newTotalGames = totalGames + 1;
     const newTotalWins = won ? totalWins + 1 : totalWins;
     const newStreak = won ? streak + 1 : 0;
+    const newLevel = getCurrentLevel(newTotalGames);
     
     setTotalGames(newTotalGames);
     setTotalWins(newTotalWins);
     setStreak(newStreak);
+    setCurrentLevel(newLevel);
     
     // Save stats with device-specific keys
     localStorage.setItem(`vocabWordleTotalGames_${deviceId}`, newTotalGames.toString());
     localStorage.setItem(`vocabWordleTotalWins_${deviceId}`, newTotalWins.toString());
-    // Note: streak is reset on page load, so we don't persist it long-term
     
     // Show streak popup if won and streak > 1
     if (won && newStreak > 1) {
@@ -384,6 +394,7 @@ const Index = () => {
           <p className="text-gray-300">Guess the 5-letter Spanish word in 5 tries!</p>
         </div>
         
+        <LevelIndicator totalGames={totalGames} />
         <GameStats streak={streak} totalGames={totalGames} totalWins={totalWins} />
         
         <GameBoard
@@ -407,7 +418,7 @@ const Index = () => {
           </button>
           
           <button
-            onClick={startNewGame}
+            onClick={() => startNewGame()}
             className="ml-4 bg-gray-700 hover:bg-gray-600 px-6 py-3 rounded-lg font-semibold text-white transition-all duration-200"
           >
             New Game
@@ -422,7 +433,7 @@ const Index = () => {
         wordDefinition={wordDefinition}
         attempts={currentRow + (gameStatus === 'won' ? 1 : 0)}
         onClose={() => setShowModal(false)}
-        onNewGame={startNewGame}
+        onNewGame={() => startNewGame()}
       />
     </div>
   );
