@@ -189,7 +189,7 @@ const Index = () => {
   const [correctWord, setCorrectWord] = useState('');
   const [currentRow, setCurrentRow] = useState(0);
   const [currentGuess, setCurrentGuess] = useState(['', '', '', '', '']);
-  const [gameBoard, setGameBoard] = useState(Array(5).fill(null).map(() => Array(5).fill('')));
+  const [gameBoard, setGameBoard] = useState(Array(6).fill(null).map(() => Array(5).fill('')));
   const [gameStatus, setGameStatus] = useState('playing'); // 'playing', 'won', 'lost'
   const [showModal, setShowModal] = useState(false);
   const [streak, setStreak] = useState(0);
@@ -272,7 +272,7 @@ const Index = () => {
     setWordDefinition(SPANISH_WORDS[randomWord]);
     setCurrentRow(0);
     setCurrentGuess(['', '', '', '', '']);
-    setGameBoard(Array(5).fill(null).map(() => Array(5).fill('')));
+    setGameBoard(Array(6).fill(null).map(() => Array(5).fill('')));
     setGameStatus('playing');
     setShowModal(false);
     setGuessHistory([]);
@@ -356,7 +356,7 @@ const Index = () => {
       setGameStatus('won');
       saveStats(true);
       setTimeout(() => setShowModal(true), 500);
-    } else if (currentRow === 4) {
+    } else if (currentRow === 5) {
       setGameStatus('lost');
       saveStats(false);
       setTimeout(() => setShowModal(true), 500);

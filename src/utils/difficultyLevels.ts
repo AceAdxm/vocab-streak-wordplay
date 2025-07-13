@@ -24,7 +24,7 @@ export const DIFFICULTY_LEVELS = {
       'PARTE', 'MAYOR', 'NUNCA', 'PEDIR', 'JUGAR', 'JUEGA', 'PAGAR', 'SUBIR',
       'MOVER', 'MENOR', 'BAJAR', 'TIRAR', 'COGER', 'DURAR', 'CHICA', 'HOTEL'
     ],
-    gamesRequired: 10
+    gamesRequired: 5
   },
   3: { // Advanced - Complex verbs and abstract concepts
     name: 'Advanced',
@@ -35,7 +35,7 @@ export const DIFFICULTY_LEVELS = {
       'LECHE', 'AVION', 'PRIMO', 'PLAYA', 'ACTOR', 'LENTO', 'NARIZ', 'BOLSA',
       'FALSO', 'DOLER', 'LAVAR', 'JUSTO', 'LLAVE', 'SUCIO', 'FUMAR', 'CLARO'
     ],
-    gamesRequired: 25
+    gamesRequired: 15
   },
   4: { // Expert - Subjunctive forms and complex vocabulary
     name: 'Expert',
@@ -45,14 +45,14 @@ export const DIFFICULTY_LEVELS = {
       'VAYAS', 'SABRE', 'DEBER', 'ELLAS', 'SALIR', 'VENIR', 'VENGA', 'FORMA',
       'GENTE', 'LUGAR', 'HACIA', 'CORTO'
     ],
-    gamesRequired: 50
+    gamesRequired: 30
   }
 };
 
 export const getCurrentLevel = (totalGames: number): number => {
-  if (totalGames >= 50) return 4;
-  if (totalGames >= 25) return 3;
-  if (totalGames >= 10) return 2;
+  if (totalGames >= 30) return 4;
+  if (totalGames >= 15) return 3;
+  if (totalGames >= 5) return 2;
   return 1;
 };
 
