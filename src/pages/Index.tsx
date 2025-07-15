@@ -200,6 +200,7 @@ const Index = () => {
   const [wordDefinition, setWordDefinition] = useState('');
   const [deviceId, setDeviceId] = useState('');
   const [currentLevel, setCurrentLevel] = useState(1);
+  const [clicksLast24h, setClicksLast24h] = useState(0);
   const inputRefs = useRef([]);
 
   // Generate or retrieve device-specific ID
@@ -235,10 +236,52 @@ const Index = () => {
     return id;
   };
 
+  // Track clicks and update counter
+  const trackClick = () => {
+    const now = Date.now();
+    const clicks = JSON.parse(localStorage.getItem('websiteClicks') || '[]');
+    
+    // Add current click
+    clicks.push(now);
+    
+    // Remove clicks older than 24 hours
+    const last24Hours = now - (24 * 60 * 60 * 1000);
+    const recentClicks = clicks.filter(clickTime => clickTime > last24Hours);
+    
+    // Save updated clicks
+    localStorage.setItem('websiteClicks', JSON.stringify(recentClicks));
+    
+    // Update counter
+    setClicksLast24h(recentClicks.length);
+  };
+
+  // Get clicks from last 24 hours
+  const getClicksLast24h = () => {
+    const now = Date.now();
+    const clicks = JSON.parse(localStorage.getItem('websiteClicks') || '[]');
+    const last24Hours = now - (24 * 60 * 60 * 1000);
+    const recentClicks = clicks.filter(clickTime => clickTime > last24Hours);
+    
+    // Update localStorage with cleaned data
+    localStorage.setItem('websiteClicks', JSON.stringify(recentClicks));
+    
+    return recentClicks.length;
+  };
+
   useEffect(() => {
     // Get or generate device ID
     const id = getDeviceId();
     setDeviceId(id);
+    
+    // Initialize click counter
+    setClicksLast24h(getClicksLast24h());
+    
+    // Add global click listener
+    const handleGlobalClick = () => {
+      trackClick();
+    };
+    
+    document.addEventListener('click', handleGlobalClick);
     
     // Reset streak to 0 on every page load
     setStreak(0);
@@ -257,6 +300,11 @@ const Index = () => {
     
     // Start a new game on every page load
     startNewGame(totalGamesCount);
+    
+    // Cleanup event listener
+    return () => {
+      document.removeEventListener('click', handleGlobalClick);
+    };
   }, []);
 
   const getRandomWord = (gameCount = 0) => {
@@ -416,6 +464,14 @@ const Index = () => {
         
         <LevelIndicator totalGames={totalGames} />
         <GameStats streak={streak} totalGames={totalGames} totalWins={totalWins} />
+        
+        {/* Click Counter */}
+        <div className="text-center mb-6">
+          <div className="bg-gray-800 rounded-lg p-3 inline-block">
+            <div className="text-sm text-gray-400">Website Clicks (24h)</div>
+            <div className="text-2xl font-bold text-blue-400">{clicksLast24h}</div>
+          </div>
+        </div>
         
         <GameBoard
           gameBoard={gameBoard}
