@@ -9,9 +9,9 @@ const Header = () => {
   const [isMainDropdownOpen, setIsMainDropdownOpen] = useState(false);
 
   const socialLinks = [
-    { name: 'TikTok', url: 'https://tiktok.com', icon: '🎵' },
-    { name: 'Instagram', url: 'https://instagram.com', icon: '📷' },
-    { name: 'GitHub', url: 'https://github.com', icon: '💻' },
+    { name: 'TikTok', url: 'https://www.tiktok.com/@aceadxm', icon: '🎵' },
+    { name: 'Instagram', url: 'https://adxm.fr', icon: '📷' },
+    { name: 'GitHub', url: 'https://github.com/AceAdxm', icon: '💻' },
   ];
 
   const handleSignUp = () => {
