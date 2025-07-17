@@ -10,7 +10,7 @@ const Header = () => {
 
   const socialLinks = [
     { name: 'TikTok', url: 'https://www.tiktok.com/@aceadxm', icon: '🎵' },
-    { name: 'Instagram', url: 'https://adxm.fr', icon: '📷' },
+    { name: 'Instagram', url: 'https://www.instagram.com/adxm.fr/?hl=en', icon: '📷' },
     { name: 'GitHub', url: 'https://github.com/AceAdxm', icon: '💻' },
   ];
 
