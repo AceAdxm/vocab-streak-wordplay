@@ -447,6 +447,19 @@ const Index = () => {
         </div>
       </main>
       
+      {/* Star us on GitHub prompt */}
+      <div className="text-center py-6 border-t border-gray-700">
+        <a
+          href="https://github.com/AceAdxm"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center space-x-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 px-6 py-3 rounded-lg font-semibold text-white transition-all duration-200 transform hover:scale-105"
+        >
+          <span>⭐</span>
+          <span>Star us on GitHub !!</span>
+        </a>
+      </div>
+      
       <GameModal
         isOpen={showModal}
         gameStatus={gameStatus}
