@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, ExternalLink, User, Bug, Book, Menu } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import IssuesBox from './IssuesBox';
 import VocabularyBook from './VocabularyBook';
 
 const Header = () => {
@@ -62,15 +61,17 @@ const Header = () => {
                     <span>Sign Up</span>
                   </button>
                   
-                  <div className="px-4 py-3 hover:bg-gray-700 transition-colors duration-200">
-                    <div className="flex items-center space-x-3 mb-2">
-                      <Bug className="w-4 h-4" />
-                      <span>Report Issues</span>
-                    </div>
-                    <div className="ml-7">
-                      <IssuesBox />
-                    </div>
-                  </div>
+                  <a
+                    href="https://github.com/AceAdxm/vocab-streak-wordplay/issues"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-700 transition-colors duration-200"
+                    onClick={() => setIsMainDropdownOpen(false)}
+                  >
+                    <Bug className="w-4 h-4" />
+                    <span>Report Issues</span>
+                    <ExternalLink className="w-4 h-4 ml-auto" />
+                  </a>
                   
                   <div className="border-t border-gray-700 mt-2 pt-2">
                     <div className="px-4 py-2 text-sm text-gray-400">Support me</div>
