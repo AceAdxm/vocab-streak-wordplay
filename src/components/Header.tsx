@@ -2,21 +2,21 @@
 import React, { useState } from 'react';
 import { ChevronDown, ExternalLink, User, Bug, Book, Menu } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 import VocabularyBook from './VocabularyBook';
 
 const Header = () => {
   const [isMainDropdownOpen, setIsMainDropdownOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   const socialLinks = [
     { name: 'TikTok', url: 'https://www.tiktok.com/@aceadxm', icon: '🎵' },
     { name: 'Instagram', url: 'https://www.instagram.com/adxm.fr/?hl=en', icon: '📷' },
     { name: 'GitHub', url: 'https://github.com/AceAdxm', icon: '💻' },
   ];
-
-  const handleSignUp = () => {
-    setIsMainDropdownOpen(false);
-    alert('Sign up coming soon! This will track your daily login streaks, correct words, and progress.');
-  };
 
   return (
     <header className="bg-gray-800 border-b border-gray-700">
@@ -40,6 +40,15 @@ const Header = () => {
             </PopoverContent>
           </Popover>
           
+          {user && (
+            <Link to="/profile">
+              <button className="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors duration-200">
+                <User className="w-4 h-4" />
+                <span>Profile</span>
+              </button>
+            </Link>
+          )}
+          
           <div className="relative">
             <button
               onClick={() => setIsMainDropdownOpen(!isMainDropdownOpen)}
@@ -53,13 +62,37 @@ const Header = () => {
             {isMainDropdownOpen && (
               <div className="absolute right-0 mt-2 w-64 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50 animate-fade-in">
                 <div className="py-2">
-                  <button
-                    onClick={handleSignUp}
-                    className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-700 transition-colors duration-200 text-left"
-                  >
-                    <User className="w-4 h-4" />
-                    <span>Sign Up</span>
-                  </button>
+                  {user ? (
+                    <>
+                      <div className="flex items-center space-x-3 px-4 py-3 border-b border-gray-700">
+                        <Avatar className="w-8 h-8">
+                          <AvatarFallback>
+                            {user.email?.charAt(0)?.toUpperCase() || 'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="text-sm text-gray-300">{user.email}</span>
+                      </div>
+                      <button
+                        onClick={() => {
+                          signOut();
+                          setIsMainDropdownOpen(false);
+                        }}
+                        className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-700 transition-colors duration-200 text-left"
+                      >
+                        <User className="w-4 h-4" />
+                        <span>Sign Out</span>
+                      </button>
+                    </>
+                  ) : (
+                    <Link
+                      to="/auth"
+                      onClick={() => setIsMainDropdownOpen(false)}
+                      className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-700 transition-colors duration-200 text-left"
+                    >
+                      <User className="w-4 h-4" />
+                      <span>Sign In / Sign Up</span>
+                    </Link>
+                  )}
                   
                   <a
                     href="https://github.com/AceAdxm/vocab-streak-wordplay/issues"

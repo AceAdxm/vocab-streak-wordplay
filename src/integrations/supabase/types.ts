@@ -14,6 +14,108 @@ export type Database = {
   }
   public: {
     Tables: {
+      daily_contributions: {
+        Row: {
+          created_at: string
+          date: string
+          games_played: number | null
+          id: string
+          user_id: string
+          words_correct: number | null
+          xp_earned: number | null
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          games_played?: number | null
+          id?: string
+          user_id: string
+          words_correct?: number | null
+          xp_earned?: number | null
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          games_played?: number | null
+          id?: string
+          user_id?: string
+          words_correct?: number | null
+          xp_earned?: number | null
+        }
+        Relationships: []
+      }
+      friends: {
+        Row: {
+          created_at: string
+          friend_id: string
+          id: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          friend_id: string
+          id?: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          friend_id?: string
+          id?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          best_streak: number | null
+          created_at: string
+          current_level: number | null
+          current_streak: number | null
+          id: string
+          total_games: number | null
+          total_wins: number | null
+          total_xp: number | null
+          updated_at: string
+          user_id: string
+          username: string | null
+          xp_in_current_level: number | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          best_streak?: number | null
+          created_at?: string
+          current_level?: number | null
+          current_streak?: number | null
+          id?: string
+          total_games?: number | null
+          total_wins?: number | null
+          total_xp?: number | null
+          updated_at?: string
+          user_id: string
+          username?: string | null
+          xp_in_current_level?: number | null
+        }
+        Update: {
+          avatar_url?: string | null
+          best_streak?: number | null
+          created_at?: string
+          current_level?: number | null
+          current_streak?: number | null
+          id?: string
+          total_games?: number | null
+          total_wins?: number | null
+          total_xp?: number | null
+          updated_at?: string
+          user_id?: string
+          username?: string | null
+          xp_in_current_level?: number | null
+        }
+        Relationships: []
+      }
       "user sign up": {
         Row: {
           content: string | null

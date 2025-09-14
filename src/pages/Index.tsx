@@ -7,6 +7,10 @@ import GameStats from '../components/GameStats';
 import StreakPopup from '../components/StreakPopup';
 import LevelIndicator from '../components/LevelIndicator';
 import { getCurrentLevel, getWordsForLevel } from '../utils/difficultyLevels';
+import { useAuth } from '@/hooks/useAuth';
+import { useGameProgress } from '@/hooks/useGameProgress';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const SPANISH_WORDS = {
   'SOMOS': 'we are',
@@ -186,6 +190,8 @@ const SPANISH_WORDS = {
 const WORDS = Object.keys(SPANISH_WORDS);
 
 const Index = () => {
+  const { user, loading } = useAuth();
+  const { updateXPAndLevel } = useGameProgress();
   const [correctWord, setCorrectWord] = useState('');
   const [currentRow, setCurrentRow] = useState(0);
   const [currentGuess, setCurrentGuess] = useState(['', '', '', '', '']);
@@ -280,7 +286,7 @@ const Index = () => {
     console.log('New game started with word:', randomWord, 'Level:', getCurrentLevel(gameCount));
   };
 
-  const saveStats = (won) => {
+  const saveStats = async (won) => {
     const newTotalGames = totalGames + 1;
     const newTotalWins = won ? totalWins + 1 : totalWins;
     const newStreak = won ? streak + 1 : 0;
@@ -291,9 +297,14 @@ const Index = () => {
     setStreak(newStreak);
     setCurrentLevel(newLevel);
     
-    // Save stats with device-specific keys
-    localStorage.setItem(`vocabWordleTotalGames_${deviceId}`, newTotalGames.toString());
-    localStorage.setItem(`vocabWordleTotalWins_${deviceId}`, newTotalWins.toString());
+    // Save stats with device-specific keys for guests
+    if (!user) {
+      localStorage.setItem(`vocabWordleTotalGames_${deviceId}`, newTotalGames.toString());
+      localStorage.setItem(`vocabWordleTotalWins_${deviceId}`, newTotalWins.toString());
+    } else {
+      // Update user progress in database
+      await updateXPAndLevel(won ? 1 : 0);
+    }
     
     // Show streak popup if won and streak > 1
     if (won && newStreak > 1) {
@@ -398,6 +409,14 @@ const Index = () => {
     return colors;
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <Header />
@@ -406,6 +425,17 @@ const Index = () => {
         isVisible={showStreakPopup} 
         onHide={() => setShowStreakPopup(false)} 
       />
+      
+      {!user && (
+        <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-4 text-center">
+          <p className="text-sm">
+            🎮 Playing as guest - 
+            <Link to="/auth" className="underline font-semibold ml-1">
+              Sign up to save progress, earn XP, and compete with friends!
+            </Link>
+          </p>
+        </div>
+      )}
       
       <main className="container mx-auto px-4 py-8 max-w-md">
         <div className="text-center mb-8">
