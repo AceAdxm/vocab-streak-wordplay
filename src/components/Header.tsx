@@ -37,6 +37,21 @@ const Header = () => {
     }
   };
 
+  // Close profile editor when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isProfileEditorOpen && event.target.closest('.profile-editor-container') === null && 
+          event.target.closest('.profile-editor-button') === null) {
+        setIsProfileEditorOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isProfileEditorOpen]);
+
   const socialLinks = [
     { name: 'TikTok', url: 'https://www.tiktok.com/@aceadxm', icon: '🎵' },
     { name: 'Instagram', url: 'https://www.instagram.com/adxm.fr/?hl=en', icon: '📷' },
@@ -76,7 +91,7 @@ const Header = () => {
             <div className="relative">
               <button 
                 onClick={() => setIsProfileEditorOpen(!isProfileEditorOpen)}
-                className="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg transition-colors duration-200"
+                className="profile-editor-button flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg transition-colors duration-200"
               >
                 <Avatar className="w-6 h-6">
                   <AvatarImage src={userProfile?.avatar_url || ''} />
@@ -88,7 +103,7 @@ const Header = () => {
               </button>
               
               {isProfileEditorOpen && (
-                <div className="absolute right-0 mt-2 z-50">
+                <div className="profile-editor-container absolute right-0 mt-2 z-50">
                   <ProfileEditor 
                     onClose={() => setIsProfileEditorOpen(false)}
                     onProfileUpdate={fetchUserProfile}
