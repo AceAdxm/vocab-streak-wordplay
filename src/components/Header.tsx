@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ChevronDown, ExternalLink, User, Bug, Book, Menu } from 'lucide-react';
+import { ChevronDown, ExternalLink, User, Bug, Book, Menu, Trophy } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -39,6 +39,13 @@ const Header = () => {
               <VocabularyBook />
             </PopoverContent>
           </Popover>
+          
+          <Link to="/leaderboard">
+            <button className="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors duration-200">
+              <Trophy className="w-4 h-4" />
+              <span>Leaderboard</span>
+            </button>
+          </Link>
           
           {user && (
             <Link to="/profile">
