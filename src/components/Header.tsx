@@ -1,16 +1,41 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ExternalLink, User, Bug, Book, Menu, Trophy } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 import VocabularyBook from './VocabularyBook';
+import ProfileEditor from './ProfileEditor';
 
 const Header = () => {
   const [isMainDropdownOpen, setIsMainDropdownOpen] = useState(false);
+  const [isProfileEditorOpen, setIsProfileEditorOpen] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
   const { user, signOut } = useAuth();
+
+  // Fetch user profile for avatar display
+  useEffect(() => {
+    if (user) {
+      fetchUserProfile();
+    }
+  }, [user]);
+
+  const fetchUserProfile = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('username, avatar_url')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!error && data) {
+      setUserProfile(data);
+    }
+  };
 
   const socialLinks = [
     { name: 'TikTok', url: 'https://www.tiktok.com/@aceadxm', icon: '🎵' },
@@ -48,12 +73,29 @@ const Header = () => {
           </Link>
           
           {user && (
-            <Link to="/profile">
-              <button className="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors duration-200">
-                <User className="w-4 h-4" />
-                <span>Profile</span>
+            <div className="relative">
+              <button 
+                onClick={() => setIsProfileEditorOpen(!isProfileEditorOpen)}
+                className="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg transition-colors duration-200"
+              >
+                <Avatar className="w-6 h-6">
+                  <AvatarImage src={userProfile?.avatar_url || ''} />
+                  <AvatarFallback className="text-xs">
+                    {userProfile?.username?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-sm">{userProfile?.username || 'Edit Profile'}</span>
               </button>
-            </Link>
+              
+              {isProfileEditorOpen && (
+                <div className="absolute right-0 mt-2 z-50">
+                  <ProfileEditor 
+                    onClose={() => setIsProfileEditorOpen(false)}
+                    onProfileUpdate={fetchUserProfile}
+                  />
+                </div>
+              )}
+            </div>
           )}
           
           <div className="relative">
@@ -73,11 +115,15 @@ const Header = () => {
                     <>
                       <div className="flex items-center space-x-3 px-4 py-3 border-b border-gray-700">
                         <Avatar className="w-8 h-8">
+                          <AvatarImage src={userProfile?.avatar_url || ''} />
                           <AvatarFallback>
-                            {user.email?.charAt(0)?.toUpperCase() || 'U'}
+                            {userProfile?.username?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || 'U'}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="text-sm text-gray-300">{user.email}</span>
+                        <div className="flex flex-col">
+                          <span className="text-sm text-white">{userProfile?.username || 'Anonymous'}</span>
+                          <span className="text-xs text-gray-400">{user.email}</span>
+                        </div>
                       </div>
                       <button
                         onClick={() => {
