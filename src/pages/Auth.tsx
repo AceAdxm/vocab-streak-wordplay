@@ -35,8 +35,8 @@ const Auth = () => {
         if (error) throw error;
 
         toast({
-          title: "Account created!",
-          description: "You can now sign in to your account.",
+          title: "Check your email!",
+          description: "We sent you a confirmation link. Click it to verify your account before signing in.",
         });
         setIsSignUp(false); // Switch to sign in mode after successful signup
       } else {
@@ -54,10 +54,14 @@ const Auth = () => {
         navigate('/');
       }
     } catch (error: any) {
+      const errorMessage = error.message === 'Email not confirmed' 
+        ? 'Please check your email and click the confirmation link before signing in.'
+        : error.message;
+      
       toast({
         variant: "destructive",
         title: "Authentication Error",
-        description: error.message,
+        description: errorMessage,
       });
     } finally {
       setLoading(false);
