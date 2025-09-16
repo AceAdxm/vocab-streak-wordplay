@@ -303,7 +303,7 @@ const Index = () => {
       localStorage.setItem(`vocabWordleTotalWins_${deviceId}`, newTotalWins.toString());
     } else {
       // Update user progress in database
-      await updateXPAndLevel(won ? 1 : 0);
+      await updateXPAndLevel(won);
     }
     
     // Show streak popup if won and streak > 1

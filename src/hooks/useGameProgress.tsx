@@ -7,10 +7,11 @@ export const useGameProgress = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const updateXPAndLevel = async (wordsCorrect: number) => {
+  const updateXPAndLevel = async (isCorrect: boolean) => {
     if (!user) return;
 
-    const xpGained = wordsCorrect * 50;
+    // New XP system: 50 XP for correct, 5 XP for wrong
+    const xpGained = isCorrect ? 50 : 5;
     const xpForNextLevel = 100;
 
     try {
@@ -30,7 +31,9 @@ export const useGameProgress = () => {
       const levelsGained = Math.floor(currentXPInLevel / xpForNextLevel);
       const newLevel = profile.current_level + levelsGained;
       const newXPInLevel = currentXPInLevel % xpForNextLevel;
-      const newTotalXP = profile.total_xp + xpGained;
+      // Add 100 XP bonus for each level gained
+      const levelBonusXP = levelsGained * 100;
+      const newTotalXP = profile.total_xp + xpGained + levelBonusXP;
 
       // Update profile
       const { error: updateError } = await supabase
@@ -40,9 +43,9 @@ export const useGameProgress = () => {
           current_level: newLevel,
           xp_in_current_level: newXPInLevel,
           total_games: profile.total_games + 1,
-          total_wins: profile.total_wins + (wordsCorrect > 0 ? 1 : 0),
-          current_streak: wordsCorrect > 0 ? profile.current_streak + 1 : 0,
-          best_streak: wordsCorrect > 0 
+          total_wins: profile.total_wins + (isCorrect ? 1 : 0),
+          current_streak: isCorrect ? profile.current_streak + 1 : 0,
+          best_streak: isCorrect 
             ? Math.max(profile.best_streak, profile.current_streak + 1)
             : profile.best_streak
         })
@@ -73,8 +76,8 @@ export const useGameProgress = () => {
           .from('daily_contributions')
           .update({
             games_played: contribution.games_played + 1,
-            words_correct: contribution.words_correct + wordsCorrect,
-            xp_earned: contribution.xp_earned + xpGained
+            words_correct: contribution.words_correct + (isCorrect ? 1 : 0),
+            xp_earned: contribution.xp_earned + xpGained + levelBonusXP
           })
           .eq('id', contribution.id);
 
@@ -89,8 +92,8 @@ export const useGameProgress = () => {
             user_id: user.id,
             date: today,
             games_played: 1,
-            words_correct: wordsCorrect,
-            xp_earned: xpGained
+            words_correct: isCorrect ? 1 : 0,
+            xp_earned: xpGained + levelBonusXP
           });
 
         if (contributionCreateError) {
@@ -102,7 +105,7 @@ export const useGameProgress = () => {
       if (levelsGained > 0) {
         toast({
           title: "Level Up! 🎉",
-          description: `You reached level ${newLevel}! Gained ${xpGained} XP.`,
+          description: `You reached level ${newLevel}! Gained ${xpGained + levelBonusXP} XP (${levelBonusXP} level bonus)!`,
         });
       } else if (xpGained > 0) {
         toast({

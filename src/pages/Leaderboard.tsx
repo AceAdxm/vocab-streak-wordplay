@@ -3,7 +3,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Medal, Award, Crown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Trophy, Medal, Award, Crown, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 
 interface LeaderboardUser {
@@ -115,6 +117,14 @@ const Leaderboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
       <Header />
       <div className="max-w-4xl mx-auto p-4 space-y-6">
+        <div className="flex items-center justify-between mb-6">
+          <Link to="/">
+            <Button variant="outline" className="flex items-center space-x-2">
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Game</span>
+            </Button>
+          </Link>
+        </div>
         <Card>
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
