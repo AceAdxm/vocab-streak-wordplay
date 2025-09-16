@@ -8,18 +8,44 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import VocabularyBook from './VocabularyBook';
-import ProfileEditor from './ProfileEditor';
 
 const Header = () => {
   const [isMainDropdownOpen, setIsMainDropdownOpen] = useState(false);
-  const [isProfileEditorOpen, setIsProfileEditorOpen] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const { user, signOut } = useAuth();
 
-  // Fetch user profile for avatar display
+  // Fetch user profile for XP display
   useEffect(() => {
     if (user) {
       fetchUserProfile();
+      
+      // Set up real-time subscription for profile updates to update XP display
+      const channel = supabase
+        .channel('header-profile-updates')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'profiles',
+            filter: `user_id=eq.${user.id}`
+          },
+          (payload) => {
+            console.log('Profile updated in header:', payload);
+            // Update local profile state with new data
+            if (payload.new) {
+              setUserProfile(prev => ({
+                ...prev,
+                ...payload.new
+              }));
+            }
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [user]);
 
@@ -28,7 +54,7 @@ const Header = () => {
 
     const { data, error } = await supabase
       .from('profiles')
-      .select('username, avatar_url')
+      .select('username, avatar_url, total_xp')
       .eq('user_id', user.id)
       .single();
 
@@ -36,21 +62,6 @@ const Header = () => {
       setUserProfile(data);
     }
   };
-
-  // Close profile editor when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isProfileEditorOpen && event.target.closest('.profile-editor-container') === null && 
-          event.target.closest('.profile-editor-button') === null) {
-        setIsProfileEditorOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isProfileEditorOpen]);
 
   const socialLinks = [
     { name: 'TikTok', url: 'https://www.tiktok.com/@aceadxm', icon: '🎵' },
@@ -88,28 +99,11 @@ const Header = () => {
           </Link>
           
           {user && (
-            <div className="relative">
-              <button 
-                onClick={() => setIsProfileEditorOpen(!isProfileEditorOpen)}
-                className="profile-editor-button flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg transition-colors duration-200"
-              >
-                <Avatar className="w-6 h-6">
-                  <AvatarImage src={userProfile?.avatar_url || ''} />
-                  <AvatarFallback className="text-xs">
-                    {userProfile?.username?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || 'U'}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-sm">{userProfile?.username || 'Edit Profile'}</span>
-              </button>
-              
-              {isProfileEditorOpen && (
-                <div className="profile-editor-container absolute right-0 mt-2 z-50">
-                  <ProfileEditor 
-                    onClose={() => setIsProfileEditorOpen(false)}
-                    onProfileUpdate={fetchUserProfile}
-                  />
-                </div>
-              )}
+            <div className="flex items-center space-x-2 bg-gray-700 px-3 py-2 rounded-lg">
+              <span className="text-sm text-gray-300">XP:</span>
+              <span className="text-sm font-bold text-purple-400">
+                {userProfile?.total_xp?.toLocaleString() || '0'}
+              </span>
             </div>
           )}
           
