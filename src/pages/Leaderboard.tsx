@@ -116,31 +116,32 @@ const Leaderboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
       <Header />
-      <div className="max-w-4xl mx-auto p-4 space-y-6">
-        <div className="flex items-center justify-between mb-6">
+      <div className="max-w-4xl mx-auto p-2 sm:p-4 space-y-4 sm:space-y-6">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
           <Link to="/">
-            <Button variant="outline" className="flex items-center space-x-2">
+            <Button variant="outline" size="sm" className="flex items-center space-x-1 sm:space-x-2">
               <ArrowLeft className="w-4 h-4" />
-              <span>Back to Game</span>
+              <span className="hidden sm:inline">Back to Game</span>
+              <span className="sm:hidden">Back</span>
             </Button>
           </Link>
         </div>
         <Card>
-          <CardHeader className="text-center">
-            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <CardHeader className="text-center pb-4 sm:pb-6">
+            <CardTitle className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               🏆 Global Leaderboard
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-sm sm:text-base">
               Top players by total XP earned
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-3 sm:p-6">
             {users.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
+              <div className="text-center py-8 text-muted-foreground text-sm sm:text-base">
                 No players yet. Be the first to sign up and start playing!
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {users.map((user, index) => {
                   const rank = index + 1;
                   const winRate = getWinRate(user.total_wins, user.total_games);
@@ -148,48 +149,54 @@ const Leaderboard = () => {
                   return (
                     <div 
                       key={user.id}
-                      className={`flex items-center space-x-4 p-4 rounded-lg border ${
+                      className={`flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 p-3 sm:p-4 rounded-lg border ${
                         rank <= 3 
                           ? 'bg-gradient-to-r from-white/10 to-white/5 border-white/20' 
                           : 'bg-white/5 border-white/10'
                       } hover:bg-white/10 transition-colors`}
                     >
-                      <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-700">
-                        <div className="flex flex-col items-center">
-                          {getRankIcon(rank)}
-                          <span className="text-xs font-bold text-white mt-1">#{rank}</span>
+                      {/* Mobile: Horizontal layout for rank, avatar, and main info */}
+                      <div className="flex items-center space-x-3">
+                        <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-700 shrink-0">
+                          <div className="flex flex-col items-center">
+                            <div className="scale-75 sm:scale-100">
+                              {getRankIcon(rank)}
+                            </div>
+                            <span className="text-xs font-bold text-white">#{rank}</span>
+                          </div>
+                        </div>
+                        
+                        <Avatar className="w-10 h-10 sm:w-12 sm:h-12 shrink-0">
+                          <AvatarImage src={user.avatar_url || ''} />
+                          <AvatarFallback>{user.username?.charAt(0)?.toUpperCase() || 'U'}</AvatarFallback>
+                        </Avatar>
+                        
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
+                            <h3 className="font-semibold text-white text-sm sm:text-base truncate">
+                              {user.username || 'Anonymous Player'}
+                            </h3>
+                            <Badge variant="secondary" className="text-xs w-fit mt-1 sm:mt-0">
+                              Level {user.current_level}
+                            </Badge>
+                          </div>
+                        </div>
+                        
+                        {/* XP - Always visible on the right */}
+                        <div className="text-right shrink-0">
+                          <div className="text-lg sm:text-2xl font-bold text-purple-400">
+                            {user.total_xp.toLocaleString()}
+                          </div>
+                          <div className="text-xs text-gray-400">XP</div>
                         </div>
                       </div>
                       
-                      <Avatar className="w-12 h-12">
-                        <AvatarImage src={user.avatar_url || ''} />
-                        <AvatarFallback>{user.username?.charAt(0)?.toUpperCase() || 'U'}</AvatarFallback>
-                      </Avatar>
-                      
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2">
-                          <h3 className="font-semibold text-white truncate">
-                            {user.username || 'Anonymous Player'}
-                          </h3>
-                          <Badge variant="secondary" className="text-xs">
-                            Level {user.current_level}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center space-x-4 text-sm text-gray-300 mt-1">
-                          <span>{user.total_xp} XP</span>
-                          <span>🔥 {user.current_streak}</span>
-                          <span>🎯 {winRate}% win rate</span>
-                          <span>🎮 {user.total_games} games</span>
-                        </div>
-                      </div>
-                      
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-purple-400">
-                          {user.total_xp.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          Best: {user.best_streak} streak
-                        </div>
+                      {/* Mobile: Stats row below, Desktop: inline */}
+                      <div className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-gray-300 sm:ml-auto">
+                        <span className="bg-white/10 px-2 py-1 rounded text-xs">🔥 {user.current_streak}</span>
+                        <span className="bg-white/10 px-2 py-1 rounded text-xs">🎯 {winRate}%</span>
+                        <span className="bg-white/10 px-2 py-1 rounded text-xs">🎮 {user.total_games}</span>
+                        <span className="bg-white/10 px-2 py-1 rounded text-xs">Best: {user.best_streak}</span>
                       </div>
                     </div>
                   );
