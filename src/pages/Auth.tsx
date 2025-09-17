@@ -5,15 +5,32 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { validateUsernameComplete } from '@/utils/usernameValidation';
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
+  const [usernameError, setUsernameError] = useState('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const handleUsernameChange = (value: string) => {
+    setUsername(value);
+    
+    if (value.trim() && isSignUp) {
+      const validation = validateUsernameComplete(value.trim());
+      if (!validation.isValid) {
+        setUsernameError(validation.error || 'Invalid username');
+      } else {
+        setUsernameError('');
+      }
+    } else {
+      setUsernameError('');
+    }
+  };
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,13 +38,25 @@ const Auth = () => {
 
     try {
       if (isSignUp) {
+        // Validate username before signup
+        const usernameValidation = validateUsernameComplete(username.trim());
+        if (!usernameValidation.isValid) {
+          setUsernameError(usernameValidation.error || 'Invalid username');
+          toast({
+            variant: "destructive",
+            title: "Invalid Username",
+            description: usernameValidation.error || 'Please choose a different username.',
+          });
+          return;
+        }
+
         const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/`,
             data: {
-              username: username
+              username: username.trim()
             }
           }
         });
@@ -112,10 +141,14 @@ const Auth = () => {
                   id="username"
                   type="text"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => handleUsernameChange(e.target.value)}
                   required={isSignUp}
                   placeholder="Choose a username"
+                  className={usernameError ? 'border-red-500 focus-visible:ring-red-500' : ''}
                 />
+                {usernameError && (
+                  <p className="text-sm text-red-500 mt-1">{usernameError}</p>
+                )}
               </div>
             )}
             <div>
@@ -145,7 +178,11 @@ const Auth = () => {
                 minLength={6}
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={loading || (isSignUp && usernameError !== '')}
+            >
               {loading ? 'Loading...' : (isSignUp ? 'Create Account' : 'Sign In')}
             </Button>
           </form>
