@@ -4,9 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Trophy, Medal, Award, Crown, ArrowLeft } from 'lucide-react';
+import { Trophy, Medal, Award, Crown, ArrowLeft, Flame, Target } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
+import { BadgeIcon } from '@/components/BadgeIcon';
 
 interface LeaderboardUser {
   id: string;
@@ -18,6 +19,9 @@ interface LeaderboardUser {
   best_streak: number;
   total_games: number;
   total_wins: number;
+  monthly_badge?: {
+    rank: number;
+  };
 }
 
 const Leaderboard = () => {
@@ -52,6 +56,9 @@ const Leaderboard = () => {
 
   const fetchLeaderboard = async () => {
     try {
+      const currentMonth = new Date().getMonth() + 1;
+      const currentYear = new Date().getFullYear();
+
       const { data, error } = await supabase
         .from('profiles')
         .select('id, username, avatar_url, total_xp, current_level, current_streak, best_streak, total_games, total_wins')
@@ -63,7 +70,21 @@ const Leaderboard = () => {
         return;
       }
 
-      setUsers(data || []);
+      // Fetch badges for current month
+      const { data: badgesData } = await supabase
+        .from('badges')
+        .select('user_id, rank')
+        .eq('month', currentMonth)
+        .eq('year', currentYear);
+
+      const badgeMap = new Map(badgesData?.map(b => [b.user_id, { rank: b.rank }]) || []);
+
+      const usersWithBadges = (data || []).map(user => ({
+        ...user,
+        monthly_badge: badgeMap.get(user.id)
+      }));
+
+      setUsers(usersWithBadges);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -173,9 +194,12 @@ const Leaderboard = () => {
                         
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
-                            <h3 className="font-semibold text-white text-sm sm:text-base truncate">
-                              {user.username || 'Anonymous Player'}
-                            </h3>
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-semibold text-white text-sm sm:text-base truncate">
+                                {user.username || 'Anonymous Player'}
+                              </h3>
+                              {user.monthly_badge && <BadgeIcon rank={user.monthly_badge.rank} size={14} />}
+                            </div>
                             <Badge variant="secondary" className="text-xs w-fit mt-1 sm:mt-0">
                               Level {user.current_level}
                             </Badge>

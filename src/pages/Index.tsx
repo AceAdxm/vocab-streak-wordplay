@@ -10,7 +10,10 @@ import { getCurrentLevel, getWordsForLevel } from '../utils/difficultyLevels';
 import { useAuth } from '@/hooks/useAuth';
 import { useGameProgress } from '@/hooks/useGameProgress';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { JoinClassModal } from '@/components/JoinClassModal';
+import { useUserRole } from '@/hooks/useUserRole';
+import { Users, GraduationCap } from 'lucide-react';
 
 const SPANISH_WORDS = {
   'SOMOS': 'we are',
@@ -191,6 +194,8 @@ const WORDS = Object.keys(SPANISH_WORDS);
 
 const Index = () => {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  const { isTeacher } = useUserRole();
   const { updateXPAndLevel } = useGameProgress();
   const [correctWord, setCorrectWord] = useState('');
   const [currentRow, setCurrentRow] = useState(0);
@@ -206,6 +211,7 @@ const Index = () => {
   const [wordDefinition, setWordDefinition] = useState('');
   const [deviceId, setDeviceId] = useState('');
   const [currentLevel, setCurrentLevel] = useState(1);
+  const [showJoinClassModal, setShowJoinClassModal] = useState(false);
   const inputRefs = useRef([]);
 
   // Generate or retrieve device-specific ID
@@ -437,6 +443,23 @@ const Index = () => {
         </div>
       )}
       
+      {user && (
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex gap-2 max-w-md mx-auto">
+            <Button onClick={() => setShowJoinClassModal(true)} variant="outline" size="sm">
+              <Users className="mr-2 h-4 w-4" />
+              Join Class
+            </Button>
+            {isTeacher && (
+              <Button onClick={() => navigate('/teacher')} variant="outline" size="sm">
+                <GraduationCap className="mr-2 h-4 w-4" />
+                Teacher Dashboard
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
+      
       <main className="container mx-auto px-4 py-8 max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -499,6 +522,7 @@ const Index = () => {
         onClose={() => setShowModal(false)}
         onNewGame={() => startNewGame()}
       />
+      <JoinClassModal open={showJoinClassModal} onOpenChange={setShowJoinClassModal} />
     </div>
   );
 };
