@@ -14,6 +14,98 @@ export type Database = {
   }
   public: {
     Tables: {
+      badges: {
+        Row: {
+          awarded_at: string | null
+          badge_type: string
+          id: string
+          month: number
+          rank: number
+          user_id: string
+          year: number
+        }
+        Insert: {
+          awarded_at?: string | null
+          badge_type: string
+          id?: string
+          month: number
+          rank: number
+          user_id: string
+          year: number
+        }
+        Update: {
+          awarded_at?: string | null
+          badge_type?: string
+          id?: string
+          month?: number
+          rank?: number
+          user_id?: string
+          year?: number
+        }
+        Relationships: []
+      }
+      class_members: {
+        Row: {
+          class_id: string
+          id: string
+          joined_at: string | null
+          user_id: string
+        }
+        Insert: {
+          class_id: string
+          id?: string
+          joined_at?: string | null
+          user_id: string
+        }
+        Update: {
+          class_id?: string
+          id?: string
+          joined_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "class_members_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      classes: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          join_code: string
+          name: string
+          school_name: string | null
+          teacher_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          join_code: string
+          name: string
+          school_name?: string | null
+          teacher_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          join_code?: string
+          name?: string
+          school_name?: string | null
+          teacher_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       daily_contributions: {
         Row: {
           created_at: string
@@ -134,15 +226,43 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_join_code: { Args: never; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "student" | "teacher" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -269,6 +389,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["student", "teacher", "admin"],
+    },
   },
 } as const
