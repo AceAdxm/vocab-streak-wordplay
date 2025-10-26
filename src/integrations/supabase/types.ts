@@ -208,6 +208,38 @@ export type Database = {
         }
         Relationships: []
       }
+      used_verification_codes: {
+        Row: {
+          class_id: string | null
+          code: string
+          id: string
+          used_at: string | null
+          used_by: string | null
+        }
+        Insert: {
+          class_id?: string | null
+          code: string
+          id?: string
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Update: {
+          class_id?: string | null
+          code?: string
+          id?: string
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "used_verification_codes_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       "user sign up": {
         Row: {
           content: string | null
