@@ -30,7 +30,8 @@ export default function TeacherDashboard() {
   const [formData, setFormData] = useState({
     name: '',
     school_name: '',
-    description: ''
+    description: '',
+    verification_code: ''
   });
 
   useEffect(() => {
@@ -77,6 +78,13 @@ export default function TeacherDashboard() {
 
   const handleCreateClass = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate verification code
+    if (formData.verification_code !== '2243' && formData.verification_code !== '4422') {
+      toast.error('Invalid verification code. Please contact your administrator.');
+      return;
+    }
+    
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -95,7 +103,7 @@ export default function TeacherDashboard() {
       toast.error('Failed to create class');
     } else {
       toast.success('Class created successfully!');
-      setFormData({ name: '', school_name: '', description: '' });
+      setFormData({ name: '', school_name: '', description: '', verification_code: '' });
       setShowCreateForm(false);
       fetchClasses();
     }
@@ -164,6 +172,18 @@ export default function TeacherDashboard() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleCreateClass} className="space-y-4">
+                <div>
+                  <Label htmlFor="verification_code">Verification Code *</Label>
+                  <Input
+                    id="verification_code"
+                    type="password"
+                    value={formData.verification_code}
+                    onChange={(e) => setFormData({ ...formData, verification_code: e.target.value })}
+                    placeholder="Enter verification code"
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">Contact your administrator for the code</p>
+                </div>
                 <div>
                   <Label htmlFor="name">Class Name *</Label>
                   <Input
